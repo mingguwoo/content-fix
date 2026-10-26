@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="IaueiwBbW8dJQxEF3LAVIG">
+<head data-page-node-id="k2kNxe99XD58itoGG1ftFF">
+<meta charset="UTF-8" data-page-node-id="IKwz7j9bl9qXclE0g5gu6a">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" data-page-node-id="KnZ37oBXu1OJqguPVYtMka">
+<title>内容整理大师 · 杂乱内容 → 分层阅读卡片</title>
+<meta name="description" content="把会议记录、需求文档、聊天记录粘贴进来，AI 自动读懂行业与语体，输出逐层展开的阅读卡片和思维树图。">
+<meta property="og:title" content="内容整理大师 · 杂乱内容一键变分层阅读卡片">
+<meta property="og:description" content="AI 读懂你的内容，按场景改写表达，输出逐层点开的阅读卡片 + 思维树图。">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://content-distiller.app.workbuddy.host/?sharecode=J7BJVZPKCX">
+<meta name="theme-color" content="#185FA5">
+<link rel="stylesheet" href="styles.css" data-page-node-id="38SVEpSadaYBBK7QYY2J7r">
+</head>
+<body data-page-node-id="cF3AHK4jnRyVAW2Zgs2VjY">
+<header class="top" data-page-node-id="VEs7zjmhe8BHGd4K3bvUTZ">
+  <div class="top-inner" data-page-node-id="0F3krDzx1YxVFsa2g8DYp7">
+    <div class="brand" data-page-node-id="RLXR5EhwPvLx6uSxXpDEdG">
+      <span class="dot" data-page-node-id="XcLEwFCP7pxWrvIhogY6iC"></span>
+      <h1 data-page-node-id="r3PVnNQqG4GrGQ7KHPfGSk">内容整理大师</h1>
+      <span class="sub" data-page-node-id="9gWbdiM3u9QYYdqcUqJCJM">读懂你的内容 → 按场景改写 → 逐层点开的阅读卡片</span>
+    </div>
+    <div class="status" id="cloudStatus" data-page-node-id="O9kN7wbStfQ7OXObRnf1Nk">正在连接云服务…</div>
+  </div>
+</header>
+
+<main class="wrap" data-page-node-id="f0ZYMnzYXGCeCKgnQ1dUBu">
+  <section class="panel left" data-page-node-id="DQf87IltnYo4bAaRnSqXTP">
+    <div class="block" id="accountBlock">
+      <div class="block-head">
+        <h2>账号与额度</h2>
+        <span class="hint" id="quotaTip">未登录</span>
+      </div>
+
+      <div id="loginView">
+        <p class="hint">未登录也能免费体验 1 次；用完后登录并兑换授权码即可继续使用。</p>
+        <div class="tabs">
+          <button class="tab active" data-way="phone">手机验证码</button>
+          <button class="tab" data-way="email">邮箱验证码</button>
+        </div>
+        <input id="loginAccount" class="text-input" placeholder="手机号" autocomplete="off">
+        <p class="field-err" id="accountErr" hidden></p>
+        <div class="login-row">
+          <input id="loginCode" class="text-input" placeholder="6 位验证码" autocomplete="one-time-code">
+          <button class="mini" id="btnSendCode">获取验证码</button>
+        </div>
+        <button class="primary full" id="btnLogin">登录 / 注册</button>
+        <p class="hint" id="loginTip"></p>
+      </div>
+
+      <div id="memberView" hidden>
+        <div class="quota"><span id="quotaLeft">0</span><span class="quota-unit">次可用</span></div>
+        <div class="login-row">
+          <input id="licenseCode" class="text-input" placeholder="输入授权码">
+          <button class="mini" id="btnRedeem">兑换</button>
+        </div>
+        <p class="hint" id="redeemTip">每次提炼成功后扣减 1 次额度。</p>
+        <button class="mini" id="btnSignOut">退出登录</button>
+      </div>
+    </div>
+
+    <div class="block" data-page-node-id="TUKJGs3AX7qZn86KNY8cOu">
+      <div class="block-head" data-page-node-id="k1WMKqBeOeZ9SLiES04HBj">
+        <h2 data-page-node-id="89OvAKtelDjEyp3iehXdAR">原始内容</h2>
+        <div class="head-actions" data-page-node-id="CsQKQD86l4B2hg32m3HrbQ">
+          <button class="mini" id="btnSample" data-page-node-id="KiDJPPF0dAfgCo5ysOgbe9">载入示例</button>
+          <button class="mini" id="btnClear" data-page-node-id="3vw4OxFHDHZqwDr2XzsUQb">清空</button>
+          <label class="mini file" data-page-node-id="mAtRs0t2CwulNgv7ClwGGG">
+            导入文件<input type="file" id="fileInput" accept=".txt,.md,.markdown,.json,.csv,.log" hidden data-page-node-id="SsNxX4uEK7Nc8hIB6rqYPl">
+          </label>
+        </div>
+      </div>
+      <textarea id="rawInput" placeholder="把杂乱无章的内容粘贴到这里：会议记录、需求文档、流程说明、聊天整理……"></textarea>
+      <div class="meta" data-page-node-id="XWT5eWajFtm4x4PLXclD0Q"><span id="charCount" data-page-node-id="mxjWg2SaPTwxjuLgoF6pby">0 字</span><span id="truncTip" class="tip" data-page-node-id="rDHccSDPr3ZsFhPtisKmWW"></span></div>
+    </div>
+
+    <div class="block" data-page-node-id="D61wvXyqaoqjnrSu3PJdWk">
+      <div class="block-head" data-page-node-id="ObRVuYbPVLesYOh0ObmgvM">
+        <h2 data-page-node-id="iduS5pXAPXttdfzliuuqES">处理链路 · 节点模型编排</h2>
+        <div class="head-actions">
+          <button class="mini" id="btnTogglePipeline">展开 ▸</button>
+          <button class="mini" id="btnReloadModels" data-page-node-id="T1td6grfeQRVv1qjoHB7Hh">刷新模型</button>
+        </div>
+      </div>
+      <div id="pipelineCfg" hidden>
+        <p class="hint" data-page-node-id="9CCoTSc00oTFs5e2deJivr">五个节点可分别指定不同模型与温度；关闭某个节点会跳过该环节（「核心压缩」不可关闭，其余环节失败会自动降级而非中断）。</p>
+        <div id="pipeline" class="pipeline" data-page-node-id="C5DRuZzr3EVZfAy5tgfjhp"></div>
+      </div>
+    </div>
+
+    <div class="runbar" data-page-node-id="WJNwZRFdwiUeozEgtK4ThY">
+      <button class="primary" id="btnRun" data-page-node-id="Utx600EcFA54YkBO2bxAbZ">整理</button>
+      <button class="ghost" id="btnStop" disabled data-page-node-id="Z0oDcBusxDG6yhiSdMRb0e">中止</button>
+    </div>
+  </section>
+
+  <div class="splitter" id="splitter" title="拖动调整左右区域宽度"></div>
+
+  <section class="panel right" data-page-node-id="QbW0OZnPggVD1Fxf7jrtdh">
+    <div class="block status-block" data-page-node-id="rRcAELBLr6qm5D7Up80GLR">
+      <div class="block-head" data-page-node-id="6JrmjRDP2nf00hEPAV8mCG"><h2 data-page-node-id="yLBRQFwk97VT8Bjf4NrGKg">执行状态</h2><div class="head-actions"><span class="hint" id="usageTip" data-page-node-id="FVVKQ5ZT776NgaFFSg9zC7">就绪</span><button class="mini" id="btnToggleSteps" hidden>查看执行过程 ▸</button></div></div>
+      <ol class="stepper" id="stepper" data-page-node-id="AMPCOUheXPGEeRl7hIBAa3" hidden></ol>
+      <div class="err" id="errorBox" hidden data-page-node-id="wxmhT3OkCEq11IczACI8hH"></div>
+    </div>
+
+    <div class="block grow" data-page-node-id="8W4iRlExkBOFpLDpbRE6Li">
+      <div class="block-head" data-page-node-id="z4shBMO9zJNdhyAGWXSN5C">
+        <div class="tabs" id="tabs" data-page-node-id="E4yxgppgZciQzk7cazuU9B">
+          <button class="tab active" data-tab="cards" data-page-node-id="5PqxnIWOYn1rlpv25ZG47i">阅读卡片</button>
+          <button class="tab" data-tab="tree" data-page-node-id="Jir3D4lt1O228kn7EJsiA2">思维树图</button>
+          <button class="tab" data-tab="json" data-page-node-id="M8wZ4ykF9zdFCShHxHVt8E">结构化数据</button>
+          <button class="tab" data-tab="log" data-page-node-id="HUvQTqADCZ41NLYsSdylVS">节点日志</button>
+        </div>
+        <div class="head-actions" id="exportBar" hidden data-page-node-id="bZCGbwZbtJ8M0R7AjBHZk6">
+          <button class="mini" id="btnCopyMd" data-page-node-id="bsWUAOUsPTqow0SyitCvP5">复制 Markdown</button>
+          <button class="mini" id="btnDownMd" data-page-node-id="9SN1xTrsbMu2KWEyUDhyRK">下载 .md</button>
+          <button class="mini" id="btnDownJson" data-page-node-id="4ZKYYD9RDTpYafdolF6TcC">下载 .json</button>
+        </div>
+      </div>
+
+      <div class="view" id="view-cards" data-page-node-id="ZArzWCTSY2ifrHy2DTy1Mw">
+        <div class="empty" id="emptyCards" data-page-node-id="mCPUaPSX7QSzVDoBDPQPfH">提炼结果会以「一级结论 → 二级细节 → 三级补充」的折叠卡片呈现，点标题右侧箭头逐层展开。</div>
+        <div id="profileBox" class="profile" hidden></div>
+        <div id="cards" data-page-node-id="qyZlJja7sxpzvE4BJnoM4e"></div>
+      </div>
+
+      <div class="view" id="view-tree" hidden data-page-node-id="s7OsPdnhFis2Ho9raNyshq">
+        <div class="tree-tools" id="treeTools" hidden data-page-node-id="2f5PwT2GDE3APsPlTuD38d">
+          <span data-page-node-id="Cd3jAOqf5OM2kchWX5FDii">层级：</span>
+          <button class="chip active" data-depth="2" data-page-node-id="4jZBN7K0kUBaWEAxudFcTh">主干 + 一级</button>
+          <button class="chip" data-depth="3" data-page-node-id="rjEiwH7v13Qy6BvJdPxDVm">含二级要点</button>
+          <button class="chip" data-depth="4" data-page-node-id="9a08FSfmegLVA009XjhSm5">含三级补充</button>
+        </div>
+        <div class="tree-scroll" id="tree" data-page-node-id="qNsjGMuWVaAbYlmggbGiA5"></div>
+      </div>
+
+      <div class="view" id="view-json" hidden data-page-node-id="hjQwpheyTk8gPBmdkfQeN9"><pre id="jsonView" class="json" data-page-node-id="C8wNeZcCzUU3j97779GXXD"></pre></div>
+      <div class="view" id="view-log" hidden data-page-node-id="eX73gcnvNEs46pj1F6MInB"><div id="logView" class="log" data-page-node-id="5yIi5wE8XPhhu1LLvlXRTZ"></div></div>
+    </div>
+  </section>
+</main>
+
+<script src="vendor/workbuddy-cloud-sdk.global.js" onerror="window.__sdkLoadFailed = true"></script>
+<script src="app.js"></script>
+</body>
+</html>
