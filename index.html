@@ -26,10 +26,17 @@
 
 <main class="wrap" data-page-node-id="f0ZYMnzYXGCeCKgnQ1dUBu">
   <section class="panel left" data-page-node-id="DQf87IltnYo4bAaRnSqXTP">
+    <div class="expand-strip" id="expandStrip" title="展开操作区，继续编辑内容">
+      <span class="es-arrow">»</span>
+      <span class="es-text">展开操作区</span>
+    </div>
     <div class="block" id="accountBlock">
       <div class="block-head">
         <h2>账号与额度</h2>
-        <span class="hint" id="quotaTip">未登录</span>
+        <div class="head-actions">
+          <span class="hint" id="quotaTip">未登录</span>
+          <button class="mini" id="btnFoldLeft" title="收起左侧操作区，结果区占满全宽">« 收起</button>
+        </div>
       </div>
 
       <div id="loginView">
@@ -99,6 +106,7 @@
   <section class="panel right" data-page-node-id="QbW0OZnPggVD1Fxf7jrtdh">
     <div class="block status-block" data-page-node-id="rRcAELBLr6qm5D7Up80GLR">
       <div class="block-head" data-page-node-id="6JrmjRDP2nf00hEPAV8mCG"><h2 data-page-node-id="yLBRQFwk97VT8Bjf4NrGKg">执行状态</h2><div class="head-actions"><span class="hint" id="usageTip" data-page-node-id="FVVKQ5ZT776NgaFFSg9zC7">就绪</span><button class="mini" id="btnToggleSteps" hidden>查看执行过程 ▸</button></div></div>
+      <div class="step-line" id="stepLine" hidden></div>
       <ol class="stepper" id="stepper" data-page-node-id="AMPCOUheXPGEeRl7hIBAa3" hidden></ol>
       <div class="err" id="errorBox" hidden data-page-node-id="wxmhT3OkCEq11IczACI8hH"></div>
     </div>

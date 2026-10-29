@@ -125,17 +125,46 @@ function renderLogs() {
 function setStepsVisible(visible, finished) {
   const stepper = $('stepper');
   const toggle = $('btnToggleSteps');
+  const line = $('stepLine');
   if (finished) {
+    // 运行结束：默认收起为单行（usageTip 显示结果），可点击展开完整过程
     stepper.hidden = !state.stepsExpanded;
+    line.hidden = true;
     toggle.hidden = false;
     toggle.textContent = state.stepsExpanded ? '收起执行过程 ▾' : '查看执行过程 ▸';
+  } else if (visible) {
+    // 运行中：默认单行（当前节点 + 进度），点击单行或按钮展开完整步骤
+    stepper.hidden = !state.stepsExpanded;
+    line.hidden = state.stepsExpanded;
+    toggle.hidden = false;
+    toggle.textContent = state.stepsExpanded ? '收起执行过程 ▾' : '展开执行过程 ▸';
   } else {
-    stepper.hidden = !visible;
+    stepper.hidden = true;
+    line.hidden = true;
     toggle.hidden = true;
   }
 }
 
+function renderStepLine(activeId) {
+  const line = $('stepLine');
+  line.innerHTML = '';
+  const idx = NODES.findIndex((n) => n.id === activeId);
+  const cur = idx >= 0 ? NODES[idx] : null;
+  const dot = document.createElement('span');
+  dot.className = 'sl-dot';
+  const name = document.createElement('span');
+  name.className = 'sl-name';
+  name.textContent = cur ? (cur.id.toUpperCase() + ' · ' + cur.name) : '准备中';
+  const tail = document.createElement('span');
+  tail.className = 'sl-tail';
+  tail.textContent = cur ? ('进行中（' + (idx + 1) + '/' + NODES.length + '），点击展开') : '点击展开';
+  line.appendChild(dot);
+  line.appendChild(name);
+  line.appendChild(tail);
+}
+
 function renderStepper(activeId) {
+  renderStepLine(activeId);
   const ol = $('stepper');
   ol.innerHTML = '';
   NODES.forEach((n) => {
@@ -860,6 +889,9 @@ async function runPipeline() {
     $('treeTools').hidden = false;
     $('exportBar').hidden = false;
     switchTab('cards');
+    // 出结果后自动收起左栏，让结果区占满全宽（点左侧窄条可展开再编辑）
+    const wrapNow = document.querySelector('.wrap');
+    if (wrapNow) wrapNow.classList.add('left-folded');
     addLog('完成', '共 ' + finalData.sections.length + ' 个一级结论');
     $('usageTip').textContent = '完成，总耗时 ' + Math.round((Date.now() - startedAt) / 1000) + ' 秒';
     if (!state.session) {
@@ -976,112 +1008,96 @@ function renderCards(data) {
   });
 }
 
-function buildTree(data, depth) {
-  const nodes = [];
-  const links = [];
-  nodes.push({ id: 'root', label: data.title || '内容主干', depth: 0 });
-  data.sections.forEach((s, i) => {
-    const sid = 's' + i;
-    nodes.push({ id: sid, label: s.conclusion, depth: 1 });
-    links.push({ from: 'root', to: sid });
-    if (depth >= 3) {
-      (s.points || []).forEach((p, j) => {
-        const pid = sid + 'p' + j;
-        nodes.push({ id: pid, label: (p.label ? p.label + '：' : '') + p.text, depth: 2 });
-        links.push({ from: sid, to: pid });
-        if (depth >= 4) {
-          (p.children || []).forEach((c, k) => {
-            const cid = pid + 'c' + k;
-            nodes.push({ id: cid, label: c.text, depth: 3 });
-            links.push({ from: pid, to: cid });
-          });
-        }
-      });
-    }
-  });
-  return { nodes, links };
-}
+// 思维树图：从上往下的缩进大纲树（HTML），节点可收起/展开，按分支配色，文字自然换行
+const MTREE_PALETTE = [
+  { stroke: '#185FA5', fill: '#E6F1FB' },  // 蓝
+  { stroke: '#0F6E56', fill: '#E1F5EE' },  // 绿
+  { stroke: '#854F0B', fill: '#FAEEDA' },  // 琥珀
+  { stroke: '#534AB7', fill: '#EEEDFE' },  // 紫
+  { stroke: '#993556', fill: '#FBEAF0' },  // 品红
+  { stroke: '#0E7C86', fill: '#E0F4F5' }   // 青
+];
 
-function wrapTreeText(label, maxUnits) {
-  const text = String(label || '');
-  const lines = [];
-  let cur = '';
-  let w = 0;
-  for (const ch of text) {
-    const cw = /[\x00-\xff]/.test(ch) ? 0.6 : 1;
-    if (w + cw > maxUnits && cur) { lines.push(cur); cur = ch; w = cw; }
-    else { cur += ch; w += cw; }
+function makeTreeNode(opts) {
+  // opts: { text, label, boxClass, stroke, fill, children: [HTMLElement] }
+  const item = document.createElement('div');
+  item.className = 'mt-item';
+  const row = document.createElement('div');
+  row.className = 'mt-row';
+  const tog = document.createElement('span');
+  tog.className = 'mt-toggle';
+  const box = document.createElement('div');
+  box.className = 'mt-box' + (opts.boxClass ? ' ' + opts.boxClass : '');
+  if (opts.stroke) {
+    box.style.borderColor = opts.stroke;
+    box.style.background = opts.fill;
   }
-  if (cur) lines.push(cur);
-  return lines;
+  if (opts.label) {
+    const b = document.createElement('span');
+    b.className = 'pt-label';
+    if (opts.stroke) b.style.color = opts.stroke;
+    b.textContent = opts.label + '：';
+    box.appendChild(b);
+  }
+  box.appendChild(document.createTextNode(opts.text || ''));
+  row.appendChild(tog);
+  row.appendChild(box);
+  item.appendChild(row);
+  if (opts.children && opts.children.length) {
+    tog.textContent = '▾';
+    tog.title = '收起 / 展开';
+    const kids = document.createElement('div');
+    kids.className = 'mt-kids';
+    opts.children.forEach((c) => kids.appendChild(c));
+    item.appendChild(kids);
+    const flip = () => {
+      const closed = item.classList.toggle('closed');
+      tog.textContent = closed ? '▸' : '▾';
+    };
+    tog.addEventListener('click', flip);
+  } else {
+    tog.classList.add('leaf');
+  }
+  return item;
 }
 
 function renderTree(data) {
   const host = $('tree');
-  if (!data || !data.sections.length) { host.innerHTML = '<div class="empty">暂无可绘制的结构。</div>'; return; }
-  const { nodes, links } = buildTree(data, state.treeDepth);
-
-  const WS = [170, 260, 260, 260];
-  const CH = [11, 15, 15, 15];
-  const GAPX = 56, PAD = 20, MARGIN = 12, LINEH = 17, PADY = 9, MAXLINES = 4;
-  const byId = {};
-  nodes.forEach((n) => { byId[n.id] = n; });
-  const childrenOf = {};
-  nodes.forEach((n) => { childrenOf[n.id] = []; });
-  links.forEach((l) => { childrenOf[l.from].push(byId[l.to]); });
-
-  nodes.forEach((n) => {
-    let lines = wrapTreeText(n.label, CH[n.depth] || 15);
-    if (lines.length > MAXLINES) {
-      lines = lines.slice(0, MAXLINES);
-      lines[MAXLINES - 1] = lines[MAXLINES - 1].slice(0, -1) + '…';
+  host.innerHTML = '';
+  if (!data || !data.sections || !data.sections.length) {
+    host.innerHTML = '<div class="empty">暂无可绘制的结构。</div>';
+    return;
+  }
+  const depth = state.treeDepth;
+  const sectionNodes = data.sections.map((s, i) => {
+    const pal = MTREE_PALETTE[i % MTREE_PALETTE.length];
+    let pointNodes = [];
+    if (depth >= 3) {
+      pointNodes = (s.points || []).map((p) => {
+        const childNodes = depth >= 4
+          ? (p.children || []).map((c) => makeTreeNode({ text: c.text }))
+          : [];
+        return makeTreeNode({
+          text: p.text, label: p.label,
+          stroke: pal.stroke, fill: pal.fill, boxClass: 'mt-soft',
+          children: childNodes
+        });
+      });
     }
-    n.lines = lines;
-    n.h = lines.length * LINEH + PADY * 2;
-    n.w = WS[n.depth] || 260;
-  });
-
-  const X = [PAD];
-  for (let d = 1; d <= 3; d += 1) X[d] = X[d - 1] + (WS[d - 1] + GAPX);
-
-  let cursor = PAD;
-  [3, 2, 1, 0].forEach((d) => {
-    nodes.filter((n) => n.depth === d).forEach((n) => {
-      const kids = childrenOf[n.id];
-      if (kids.length) {
-        n.y = kids.reduce((a, c) => a + c.y, 0) / kids.length;
-      } else {
-        n.y = cursor + n.h / 2;
-        cursor += n.h + MARGIN;
-      }
-      n.x = X[d];
+    return makeTreeNode({
+      text: s.conclusion, boxClass: 'mt-branch',
+      stroke: pal.stroke, fill: pal.fill,
+      children: pointNodes
     });
   });
-
-  const maxX = Math.max.apply(null, nodes.map((n) => n.x + n.w)) + PAD;
-  const maxY = Math.max.apply(null, nodes.map((n) => n.y + n.h / 2)) + PAD;
-  const colors = ['#185FA5', '#534AB7', '#0F6E56', '#854F0B'];
-  const fills = ['#E6F1FB', '#EEEDFE', '#E1F5EE', '#FAEEDA'];
-
-  let svg = '<svg xmlns="http://www.w3.org/2000/svg" width="' + maxX + '" height="' + maxY + '" font-family="system-ui,-apple-system,\'PingFang SC\',\'Microsoft YaHei\',sans-serif">';
-  links.forEach((l) => {
-    const a = byId[l.from], b = byId[l.to];
-    const x1 = a.x + a.w, y1 = a.y, x2 = b.x, y2 = b.y;
-    const mx = (x1 + x2) / 2;
-    svg += '<path d="M' + x1 + ',' + y1 + ' C' + mx + ',' + y1 + ' ' + mx + ',' + y2 + ' ' + x2 + ',' + y2 + '" fill="none" stroke="#B4B2A9" stroke-width="1"/>';
+  const root = makeTreeNode({
+    text: data.title || '内容主干', boxClass: 'mt-root',
+    children: sectionNodes
   });
-  nodes.forEach((n) => {
-    const c = colors[n.depth] || '#5F5E5A';
-    const top = n.y - n.h / 2;
-    svg += '<rect x="' + n.x + '" y="' + top + '" width="' + n.w + '" height="' + n.h + '" rx="8" fill="' + (fills[n.depth] || '#F1EFE8') + '" stroke="' + c + '" stroke-width="0.8"/>';
-    svg += '<text x="' + (n.x + 12) + '" y="' + (top + PADY + 11) + '" font-size="12" fill="#2C2C2A">';
-    n.lines.forEach((line, i) => {
-      svg += '<tspan x="' + (n.x + 12) + '" dy="' + (i === 0 ? 0 : LINEH) + '">' + escapeHtml(line) + '</tspan>';
-    });
-    svg += '</text>';
-  });
-  svg += '</svg>';
-  host.innerHTML = svg;
+  const wrap = document.createElement('div');
+  wrap.className = 'mtree';
+  wrap.appendChild(root);
+  host.appendChild(wrap);
 }
 
 function renderJson(data) {
@@ -1159,10 +1175,13 @@ function bindEvents() {
     if (state.controller) state.controller.abort();
   });
 
-  $('btnToggleSteps').addEventListener('click', () => {
+  const flipSteps = () => {
     state.stepsExpanded = !state.stepsExpanded;
-    setStepsVisible(false, true);
-  });
+    // 运行中保持运行态展示（单行/步骤列表切换），结束后保持「完成态」
+    setStepsVisible(state.running, !state.running);
+  };
+  $('btnToggleSteps').addEventListener('click', flipSteps);
+  $('stepLine').addEventListener('click', flipSteps);
 
   // 账号与额度
   $('accountBlock').addEventListener('click', (e) => {
@@ -1182,6 +1201,16 @@ function bindEvents() {
   $('btnLogin').addEventListener('click', submitLogin);
   $('btnRedeem').addEventListener('click', redeemLicense);
   $('btnSignOut').addEventListener('click', doSignOut);
+
+  // 左栏折叠 / 展开
+  $('btnFoldLeft').addEventListener('click', () => {
+    const w = document.querySelector('.wrap');
+    if (w) w.classList.add('left-folded');
+  });
+  $('expandStrip').addEventListener('click', () => {
+    const w = document.querySelector('.wrap');
+    if (w) w.classList.remove('left-folded');
+  });
 
   // 左右区域可拖动分割线
   const splitter = $('splitter');
