@@ -503,7 +503,7 @@ function gateAccount() {
     if (isVip()) return true; // VIP 无限次，直接放行
     if (state.quota.remaining <= 0) {
       const box = $('errorBox');
-      box.textContent = '可用次数已用完，请在左侧「账号与额度」中兑换授权码';
+      box.textContent = '可用次数已用完，请点右上角账号展开后兑换授权码';
       box.hidden = false;
       return false;
     }
