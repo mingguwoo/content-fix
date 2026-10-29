@@ -309,15 +309,39 @@ function renderAccount() {
   const logged = !!(state.session && state.session.user);
   $('loginView').hidden = logged;
   $('memberView').hidden = !logged;
+  const label = $('accountLabel');
+  const chip = $('accountQuota');
+  const dot = $('accountDot');
   if (!logged) {
-    $('quotaTip').textContent = state.trialUsed ? '游客 · 免费体验已用完' : '游客 · 可免费体验 1 次';
+    const tip = state.trialUsed ? '游客 · 免费体验已用完' : '游客 · 可免费体验 1 次';
+    $('quotaTip').textContent = tip;
     $('quotaTip').className = 'hint' + (state.trialUsed ? ' bad' : '');
+    label.textContent = tip;
+    chip.hidden = true;
+    dot.className = 'acc-dot' + (state.trialUsed ? ' off' : '');
     return;
   }
   $('quotaTip').className = 'hint';
   const u = state.session.user || {};
-  $('quotaTip').textContent = (isVip() ? 'VIP · 无限次 · ' : '') + (u.name || u.phone || u.email || '已登录');
-  $('quotaLeft').textContent = isVip() ? '∞' : String(state.quota.remaining);
+  const name = u.name || u.phone || u.email || '已登录';
+  const vip = isVip();
+  $('quotaTip').textContent = u.phone || u.email || name;
+  label.textContent = vip ? 'VIP · ' + name : name;
+  chip.hidden = false;
+  chip.textContent = vip ? '无限次' : (state.quota.remaining + ' 次可用');
+  dot.className = 'acc-dot ' + (vip ? 'vip' : 'logged');
+  $('quotaLeft').textContent = vip ? '∞' : String(state.quota.remaining);
+}
+
+// 顶部账号单行 → 展开/收起面板
+function setAccountOpen(open) {
+  const widget = $('accountWidget');
+  const panel = $('accountPanel');
+  const bar = $('accountBar');
+  if (!widget || !panel) return;
+  widget.classList.toggle('open', !!open);
+  panel.hidden = !open;
+  if (bar) bar.setAttribute('aria-expanded', open ? 'true' : 'false');
 }
 
 async function restoreAuth() {
@@ -425,6 +449,7 @@ async function submitLogin() {
   state.session = session || null;
   renderAccount();
   await loadQuota();
+  setAccountOpen(false); // 收起面板，顶部单行即时反映登录态
 }
 
 async function redeemLicense() {
@@ -1183,8 +1208,13 @@ function bindEvents() {
   $('btnToggleSteps').addEventListener('click', flipSteps);
   $('stepLine').addEventListener('click', flipSteps);
 
-  // 账号与额度
-  $('accountBlock').addEventListener('click', (e) => {
+  // 账号与额度（顶部右侧单行 + 展开面板）
+  $('accountBar').addEventListener('click', (e) => {
+    e.stopPropagation();
+    setAccountOpen($('accountPanel').hidden);
+  });
+  $('accountPanel').addEventListener('click', (e) => {
+    e.stopPropagation(); // 面板内部交互不触发「点击外部收起」
     const t = e.target.closest('.tab');
     if (!t || !t.dataset.way) return;
     state.loginWay = t.dataset.way;
@@ -1195,6 +1225,11 @@ function bindEvents() {
     $('loginAccount').placeholder = state.loginWay === 'phone' ? '手机号' : '邮箱';
     setAccountErr('');
     setLoginTip('');
+  });
+  $('btnCloseAccount').addEventListener('click', () => setAccountOpen(false));
+  document.addEventListener('click', () => setAccountOpen(false));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') setAccountOpen(false);
   });
   $('loginAccount').addEventListener('input', () => setAccountErr(''));
   $('btnSendCode').addEventListener('click', sendCode);

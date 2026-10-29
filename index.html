@@ -20,7 +20,50 @@
       <h1 data-page-node-id="r3PVnNQqG4GrGQ7KHPfGSk">内容整理大师</h1>
       <span class="sub" data-page-node-id="9gWbdiM3u9QYYdqcUqJCJM">读懂你的内容 → 按场景改写 → 逐层点开的阅读卡片</span>
     </div>
-    <div class="status" id="cloudStatus" data-page-node-id="O9kN7wbStfQ7OXObRnf1Nk">正在连接云服务…</div>
+    <div class="top-right" data-page-node-id="O9kN7wbStfQ7OXObRnf1Nk">
+      <div class="account" id="accountWidget">
+        <button type="button" class="account-bar" id="accountBar" aria-haspopup="true" aria-expanded="false" title="展开账号与额度">
+          <span class="acc-dot" id="accountDot"></span>
+          <span class="acc-text" id="accountLabel">游客 · 可免费体验 1 次</span>
+          <span class="acc-quota" id="accountQuota" hidden></span>
+          <span class="acc-caret" aria-hidden="true">▾</span>
+        </button>
+        <div class="account-panel" id="accountPanel" hidden>
+          <div class="ap-head">
+            <span class="ap-title">账号与额度</span>
+            <span class="hint" id="quotaTip">未登录</span>
+            <button type="button" class="mini ap-close" id="btnCloseAccount" title="收起">✕</button>
+          </div>
+
+          <div id="loginView">
+            <p class="hint">未登录也能免费体验 1 次；用完后登录并兑换授权码即可继续使用。</p>
+            <div class="tabs">
+              <button class="tab active" data-way="phone">手机验证码</button>
+              <button class="tab" data-way="email">邮箱验证码</button>
+            </div>
+            <input id="loginAccount" class="text-input" placeholder="手机号" autocomplete="off">
+            <p class="field-err" id="accountErr" hidden></p>
+            <div class="login-row">
+              <input id="loginCode" class="text-input" placeholder="6 位验证码" autocomplete="one-time-code">
+              <button class="mini" id="btnSendCode">获取验证码</button>
+            </div>
+            <button class="primary full" id="btnLogin">登录 / 注册</button>
+            <p class="hint" id="loginTip"></p>
+          </div>
+
+          <div id="memberView" hidden>
+            <div class="quota"><span id="quotaLeft">0</span><span class="quota-unit">次可用</span></div>
+            <div class="login-row">
+              <input id="licenseCode" class="text-input" placeholder="输入授权码">
+              <button class="mini" id="btnRedeem">兑换</button>
+            </div>
+            <p class="hint" id="redeemTip">每次提炼成功后扣减 1 次额度。</p>
+            <button class="mini" id="btnSignOut">退出登录</button>
+          </div>
+        </div>
+      </div>
+      <div class="status" id="cloudStatus">正在连接云服务…</div>
+    </div>
   </div>
 </header>
 
@@ -30,42 +73,10 @@
       <span class="es-arrow">»</span>
       <span class="es-text">展开操作区</span>
     </div>
-    <div class="block" id="accountBlock">
-      <div class="block-head">
-        <h2>账号与额度</h2>
-        <div class="head-actions">
-          <span class="hint" id="quotaTip">未登录</span>
-          <button class="mini" id="btnFoldLeft" title="收起左侧操作区，结果区占满全宽">« 收起</button>
-        </div>
-      </div>
-
-      <div id="loginView">
-        <p class="hint">未登录也能免费体验 1 次；用完后登录并兑换授权码即可继续使用。</p>
-        <div class="tabs">
-          <button class="tab active" data-way="phone">手机验证码</button>
-          <button class="tab" data-way="email">邮箱验证码</button>
-        </div>
-        <input id="loginAccount" class="text-input" placeholder="手机号" autocomplete="off">
-        <p class="field-err" id="accountErr" hidden></p>
-        <div class="login-row">
-          <input id="loginCode" class="text-input" placeholder="6 位验证码" autocomplete="one-time-code">
-          <button class="mini" id="btnSendCode">获取验证码</button>
-        </div>
-        <button class="primary full" id="btnLogin">登录 / 注册</button>
-        <p class="hint" id="loginTip"></p>
-      </div>
-
-      <div id="memberView" hidden>
-        <div class="quota"><span id="quotaLeft">0</span><span class="quota-unit">次可用</span></div>
-        <div class="login-row">
-          <input id="licenseCode" class="text-input" placeholder="输入授权码">
-          <button class="mini" id="btnRedeem">兑换</button>
-        </div>
-        <p class="hint" id="redeemTip">每次提炼成功后扣减 1 次额度。</p>
-        <button class="mini" id="btnSignOut">退出登录</button>
-      </div>
+    <div class="panel-bar">
+      <span class="pb-title">操作区</span>
+      <button class="mini" id="btnFoldLeft" title="收起左侧操作区，结果区占满全宽">« 收起</button>
     </div>
-
     <div class="block" data-page-node-id="TUKJGs3AX7qZn86KNY8cOu">
       <div class="block-head" data-page-node-id="k1WMKqBeOeZ9SLiES04HBj">
         <h2 data-page-node-id="89OvAKtelDjEyp3iehXdAR">原始内容</h2>

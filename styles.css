@@ -26,6 +26,8 @@ body {
 .top {
   background: var(--panel);
   border-bottom: 1px solid var(--line);
+  position: relative;
+  z-index: 30;
 }
 
 .top-inner {
@@ -48,9 +50,96 @@ body {
 .brand h1 { font-size: 16px; font-weight: 600; margin: 0; }
 .brand .sub { font-size: 12px; color: var(--muted); }
 
-.status { font-size: 12px; color: var(--muted); }
+.top-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 14px;
+  min-width: 0;
+}
+
+.status { font-size: 12px; color: var(--muted); white-space: nowrap; }
 .status.ok { color: #0F6E56; }
 .status.bad { color: #A32D2D; }
+
+/* ---------- 顶部右侧 · 账号与额度（单行可展开） ---------- */
+
+.account { position: relative; }
+
+.account-bar {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 340px;
+  padding: 5px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #fbfcfe;
+  color: var(--text);
+  font-size: 12.5px;
+  line-height: 1.6;
+  white-space: nowrap;
+}
+.account-bar:hover { border-color: var(--blue); background: var(--blue-bg); }
+
+.account-bar .acc-dot {
+  flex: none;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--faint);
+}
+.account-bar .acc-dot.logged { background: var(--blue); }
+.account-bar .acc-dot.vip { background: #B4761F; }
+.account-bar .acc-dot.off { background: #C0392B; }
+
+.account-bar .acc-text {
+  max-width: 190px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.account-bar .acc-quota {
+  flex: none;
+  color: var(--blue);
+  font-weight: 600;
+  padding-left: 8px;
+  border-left: 1px solid var(--line);
+}
+
+.account-bar .acc-caret {
+  flex: none;
+  color: var(--faint);
+  font-size: 10px;
+  transition: transform .18s ease;
+}
+.account.open .account-bar { border-color: var(--blue); background: var(--blue-bg); }
+.account.open .acc-caret { transform: rotate(180deg); }
+
+.account-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 320px;
+  padding: 12px 14px 14px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: 0 12px 32px rgba(22, 32, 46, .14);
+  z-index: 60;
+}
+
+.ap-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 8px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid var(--line);
+}
+.ap-head .ap-title { font-size: 13px; font-weight: 600; }
+.ap-head .hint { margin: 0; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ap-head .ap-close { flex: none; padding: 2px 8px; line-height: 1.4; }
 
 .wrap {
   max-width: 1280px;
@@ -125,7 +214,7 @@ body {
 .hint { font-size: 12px; color: var(--muted); margin: 0 0 8px; }
 .hint.bad { color: #A32D2D; }
 
-#accountBlock .tabs { margin-bottom: 10px; }
+#accountPanel .tabs { margin-bottom: 10px; }
 
 .text-input {
   width: 100%;
@@ -180,8 +269,22 @@ button {
 
 button:disabled { opacity: .5; cursor: not-allowed; }
 
-.mini { font-size: 12px; padding: 5px 10px; color: var(--muted); }
+.mini { font-size: 12px; padding: 5px 10px; color: var(--muted); white-space: nowrap; }
 .mini.file { cursor: pointer; }
+
+/* 左栏工具条：把「收起操作区」从内容块里独立出来，避免标题行按钮拥挤 */
+.panel-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 0 2px;
+}
+.panel-bar .pb-title {
+  font-size: 11.5px;
+  color: var(--faint);
+  letter-spacing: 1px;
+}
 
 .primary {
   background: var(--blue);
@@ -455,4 +558,14 @@ button:disabled { opacity: .5; cursor: not-allowed; }
     flex-direction: row; justify-content: center; padding: 9px 12px;
   }
   .wrap.left-folded .expand-strip .es-text { writing-mode: horizontal-tb; letter-spacing: 1px; }
+}
+
+@media (max-width: 720px) {
+  .top-inner { flex-wrap: wrap; padding: 12px 14px; }
+  .brand { flex-wrap: wrap; gap: 6px; }
+  .brand .sub { flex-basis: 100%; }
+  .top-right { flex-basis: 100%; justify-content: space-between; gap: 10px; }
+  .account-bar { max-width: 240px; }
+  .account-bar .acc-text { max-width: 130px; }
+  .account-panel { width: min(320px, calc(100vw - 28px)); }
 }
